@@ -88,8 +88,14 @@ class Game
         def update(delta)
             @sequence.update(delta)
 
-            @objects.each do |object|
+            @objects.delete_if do |object|
                 object.update(delta)
+
+                if object.respond_to? :dead?
+                    object.dead?
+                else
+                    false
+                end
             end
         end
 
