@@ -1,3 +1,5 @@
+require 'game'
+
 class Player
     SPEED = 500
 
@@ -15,11 +17,25 @@ class Player
         @speed = SPEED
     end
 
-    def update(delta)
-        if @direction
-            @x += @speed * delta * Math.cos(@direction)
-            @y += @speed * delta * Math.sin(@direction)
+    def update(delta, &block)
+        if block_given?
+            @update = block
+        else
+            if @update
+                @update.call(delta)
+            end
+
+            if @direction
+                @x += @speed * delta * Math.cos(@direction)
+                @y += @speed * delta * Math.sin(@direction)
+            end
         end
+
+        if @x < 0 then @x = 0 end
+        if @y < 0 then @y = 0 end
+
+        if @x > Game.width then @x = Game.width end
+        if @y > Game.height then @y = Game.height end
     end
 
     def draw(ctx)
